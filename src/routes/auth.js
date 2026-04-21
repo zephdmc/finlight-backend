@@ -1,5 +1,15 @@
 const express = require('express');
 const router = express.Router();
+// TEMPORARY TEST ROUTE - Remove after debugging
+router.post('/test-login', (req, res) => {
+    console.log('🔥 TEST ROUTE HIT!');
+    res.json({ 
+      success: true, 
+      message: 'Test route is working!',
+      timestamp: new Date().toISOString()
+    });
+  });
+
 const authController = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const roleCheck = require('../middleware/roleCheck');
