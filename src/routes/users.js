@@ -284,8 +284,7 @@ router.get(
             name: user.name,
             email: user.email,
             registeredAt: user.createdAt,
-            registrationStatus: registration?.status || 'unpaid',
-            registrationPaidAt: registration?.paidAt || null
+           
           };
         })
       );
