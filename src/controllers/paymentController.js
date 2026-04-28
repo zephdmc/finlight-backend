@@ -227,6 +227,60 @@ exports.verifyPayment = async (req, res, next) => {
   }
 };
 
+// @desc    Mark a fine as paid (Admin)
+// @route   PUT /api/payments/:id/mark-paid
+// @access  Private/Admin
+exports.markFineAsPaid = async (req, res, next) => {
+  try {
+    const { paidAt } = req.body;
+    
+    console.log('=== MARK FINE AS PAID ===');
+    console.log('Fine ID:', req.params.id);
+    
+    const payment = await Payment.findById(req.params.id);
+    
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Payment not found'
+      });
+    }
+    
+    // Check if this is a fine
+    if (payment.type !== 'fine') {
+      return res.status(400).json({
+        success: false,
+        message: 'This endpoint is only for fines'
+      });
+    }
+    
+    // Check if already paid
+    if (payment.status === 'paid') {
+      return res.status(400).json({
+        success: false,
+        message: 'Fine already paid'
+      });
+    }
+    
+    // Update only the status and paidAt
+    payment.status = 'paid';
+    payment.paidAt = paidAt || new Date();
+    
+    await payment.save();
+    
+    console.log('Fine marked as paid:', { id: payment._id, status: payment.status });
+    
+    res.status(200).json({
+      success: true,
+      data: payment,
+      message: 'Fine marked as paid successfully'
+    });
+  } catch (error) {
+    console.error('Mark fine as paid error:', error);
+    next(error);
+  }
+};
+
 // @desc    Create payment (Admin)
 // @route   POST /api/payments
 // @access  Private/Admin

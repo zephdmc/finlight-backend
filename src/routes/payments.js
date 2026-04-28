@@ -109,6 +109,8 @@ router.get(
   }
 );
 
+// Mark a fine as paid (Admin only)
+router.put('/:id/mark-paid', protect, roleCheck('admin'), paymentController.markFineAsPaid);
 /**
  * @route   POST /api/payments
  * @desc    Create a new payment (Admin only)
